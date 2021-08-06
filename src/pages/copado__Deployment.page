@@ -252,7 +252,7 @@
                             <apex:panelGrid id="theGrid" columns="2" style="width:100%;" columnClasses="co-info-panel">
                                 <apex:pageblock title="Information" id="pbInformation">
                                     <apex:pageBlockButtons id="pbbInfo" location="top">
-                                        <apex:commandButton id="btnDeploymentSave" value="{!$Label.site.save}" onclick="setAttachDeploymentFile(); copadoApp.dirty=false;"
+                                        <apex:commandButton id="btnDeploymentSave" value="{!$Label.site.save}" onclick="copadoApp.dirty=false;"
                                             action="{!saveDeployment}" rerender="pbsDestinations,otherInfoSection,msg,pJSConfig,headerFields,lexHeaderContainer,sectionHeaderContainer"
                                         />
                                         <apex:commandButton id="btnDeploymentCancel" value="{!$Label.site.cancel}" action="{!cancel}" onclick="copadoApp.cancel();return false;"
@@ -288,7 +288,7 @@
                                                     </div>
                                                 </span>
                                             </apex:outputLabel>
-                                            <input type="checkbox" id="js-attachDeploymentFile" style="margin-top: 0;" />
+                                            <apex:inputField value="{!copado__Deployment__c.copado__Attach_Deployment_File__c}" id="js-attachDeploymentFile" />
                                         </apex:pageBlockSectionItem>
                                         <apex:pageBlockSectionItem >
                                             <apex:outputLabel for="ifFrom" value="{!$ObjectType.copado__Deployment__c.Fields.copado__From_Org__c.Label}" />
@@ -372,23 +372,6 @@
                                             <apex:inputField value="{!copado__Deployment__c[f]}" required="{!OR(f.required, f.dbrequired)}" />
                                         </apex:repeat>
                                     </apex:pageBlockSection>
-                                    <script>
-                                        var attachDeploymentFileInput = document.getElementById('js-attachDeploymentFile');
-                                        if (attachDeploymentFileInput) {
-                                            var deploymentNameInput = document.querySelector('.deploymentNameInput');
-                                            if (deploymentNameInput) {
-                                                if (deploymentNameInput.value.includes('@debug')) {
-                                                    if (!attachDeploymentFileInput.checked) {
-                                                        attachDeploymentFileInput.checked = true;
-                                                    }
-                                                } else {
-                                                    if (attachDeploymentFileInput.checked) {
-                                                        attachDeploymentFileInput.checked = false;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    </script>
                                 </apex:pageblock>
                                 <apex:pageblock title="Status" id="pbStatus">
                                     <style>
@@ -600,26 +583,6 @@
             document.getElementById('copadoIframe').addEventListener('unload', function () {
                 console.log('unloading iframe');
             });
-        </script>
-        <script>
-            function setAttachDeploymentFile() {
-                var attachDeploymentFileInput = document.getElementById('js-attachDeploymentFile');
-                if (attachDeploymentFileInput) {
-                    var deploymentNameInput = document.querySelector('.deploymentNameInput');
-                    if (deploymentNameInput) {
-                        var name = deploymentNameInput.value;
-                        if (attachDeploymentFileInput.checked) {
-                            if (name && !name.includes('@debug')) {
-                                deploymentNameInput.value = name.slice(0, 74) + '@debug';
-                            }
-                        } else {
-                            if (name && name.includes('@debug')) {
-                                deploymentNameInput.value = name.replace(/@debug/g, '');
-                            }
-                        }
-                    }
-                }
-            }
         </script>
     </apex:outputPanel>
 </apex:page>
